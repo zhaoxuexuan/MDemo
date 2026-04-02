@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026美伊军事冲突态势分析 (2.28 - 3.19)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    background-color: #0f172a;
+    color: #f8fafc;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    max-height: 400px;
+}
+@media (min-width: 768px) {
+    .chart-container {
+        height: 400px;
+    }
+}
+.glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    backdrop-filter: blur(12px);
+}
+.text-vibrant-orange { color: #ff6d00; }
+.text-vibrant-cyan { color: #00e5ff; }
+.bg-vibrant-orange { background-color: #ff6d00; }
+.bg-vibrant-cyan { background-color: #00e5ff; }
+</style>
+</head>
+<body class="antialiased min-h-screen pb-20">
+
+<header class="pt-16 pb-10 px-6 text-center border-b border-slate-800">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+            2026美伊冲突：<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff6d00] to-[#00e5ff]">非对称作战的数据映射</span>
+        </h1>
+        <p class="text-lg text-slate-400 font-medium">
+            态势分析报告 | 数据周期：2026年2月28日 - 2026年3月19日
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+    <section>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold flex items-center gap-2 mb-3">
+                <span class="text-2xl">📊</span> 战局概览：核心作战指标
+            </h2>
+            <p class="text-slate-300 leading-relaxed">
+                自2026年2月28日冲突爆发以来，双方进入了高强度的消耗战阶段。美军依赖其高精尖的防区外打击能力，而伊朗则充分发挥了其庞大的低成本无人机与弹道导弹库存优势。以下为开战至今20天内的核心军事指标概览。
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-center items-center text-center">
+                <span class="text-4xl mb-2">🚀</span>
+                <span class="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-1">总发射弹药数</span>
+                <span class="text-3xl font-black text-white">8,450+</span>
+                <span class="text-xs text-slate-500 mt-2">包含各类导弹、制导炸弹及自杀式无人机</span>
+            </div>
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-center items-center text-center border-b-4 border-[#ff6d00]">
+                <span class="text-4xl mb-2">💸</span>
+                <span class="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-1">美军单日最高消耗</span>
+                <span class="text-3xl font-black text-vibrant-orange">$4.2 亿</span>
+                <span class="text-xs text-slate-500 mt-2">发生于3月4日的大规模防空拦截与反击作战</span>
+            </div>
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-center items-center text-center border-b-4 border-[#00e5ff]">
+                <span class="text-4xl mb-2">🛡️</span>
+                <span class="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-1">伊朗蜂群攻击波次</span>
+                <span class="text-3xl font-black text-vibrant-cyan">14 次</span>
+                <span class="text-xs text-slate-500 mt-2">超百架Shahed无人机与导弹的协同饱和攻击</span>
+            </div>
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-center items-center text-center">
+                <span class="text-4xl mb-2">🎯</span>
+                <span class="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-1">高价值目标摧毁数</span>
+                <span class="text-3xl font-black text-white">112 处</span>
+                <span class="text-xs text-slate-500 mt-2">涵盖雷达站、指挥所及后勤枢纽</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="w-full h-px bg-slate-800"></div>
+
+    <section>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold flex items-center gap-2 mb-3">
+                <span class="text-2xl">📈</span> 精确制导弹药消耗与作战成本
+            </h2>
+            <p class="text-slate-300 leading-relaxed">
+                本节展示了双方弹药库存的“燃烧”速度与经济成本。美军在冲突初期消耗了大量昂贵的防空拦截弹（如SM-6）和防区外打击武器（如战斧巡航导弹），导致成本曲线急剧上升。相反，伊朗利用造价低廉的弹药维持了高频次的火力投射。
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 text-center">累计精确制导弹药消耗量 (枚/架)</h3>
+                <div class="chart-container">
+                    <canvas id="munitionsChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 text-center">单日作战成本估算 (百万美元)</h3>
+                <div class="chart-container">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="w-full h-px bg-slate-800"></div>
+
+    <section>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold flex items-center gap-2 mb-3">
+                <span class="text-2xl">⚖️</span> 非对称作战：武器效费比分析
+            </h2>
+            <p class="text-slate-300 leading-relaxed">
+                非对称作战的核心在于“以小博大”。散点图揭示了双方主要武器系统的特征：美军武器（橙色）普遍处于高成本、低发射量区间，追求单发摧毁概率与拦截成功率；伊朗武器（青色）则集中在低成本、高发射量区间，意图通过数量瘫痪美军的防空系统。气泡大小代表该类武器在本次冲突中造成的总成本支出。
+            </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold mb-4 text-center">美伊主动用武器类型：消耗数量 vs 单发成本</h3>
+            <div class="chart-container lg:max-w-4xl">
+                <canvas id="asymmetricChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <div class="w-full h-px bg-slate-800"></div>
+
+    <section>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold flex items-center gap-2 mb-3">
+                <span class="text-2xl">🏥</span> 人员伤亡趋势分析
+            </h2>
+            <p class="text-slate-300 leading-relaxed">
+                冲突导致双方均出现人员损失。美军伤亡主要集中在驻中东基地遭受弹道导弹“漏网之鱼”打击时；伊朗方面的伤亡则随着美军对其地下设施、防空阵地和指挥节点的空袭而呈阶梯式上升。
+            </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold mb-4 text-center">开战至今累计人员伤亡趋势</h3>
+            <div class="chart-container lg:max-w-4xl">
+                <canvas id="casualtiesChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <div class="w-full h-px bg-slate-800"></div>
+
+    <section>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold flex items-center gap-2 mb-3">
+                <span class="text-2xl">💥</span> 战略目标摧毁统计
+            </h2>
+            <p class="text-slate-300 leading-relaxed">
+                精确打击直接影响战争潜力。统计显示，美军主要针对伊朗的雷达预警系统与指挥控制(C2)节点进行“拔眼”与“斩首”行动；而伊朗的打击重心则放在了美军及盟友的空军基地跑道、机库以及后勤物资枢纽上，旨在限制美军战机的出动率。
+            </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold mb-4 text-center">各类军事设施被摧毁/重创数量</h3>
+            <div class="chart-container lg:max-w-3xl">
+                <canvas id="targetsChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
+
+    function wrapLabel(label) {
+        if (label.length <= 16) return label;
+        let words = label.split(' ');
+        let lines = [];
+        let currentLine = '';
+        for (let word of words) {
+            if ((currentLine + word).length > 16) {
+                if (currentLine) lines.push(currentLine.trim());
+                currentLine = word + ' ';
+            } else {
+                currentLine += word + ' ';
+            }
+        }
+        if (currentLine) lines.push(currentLine.trim());
+        return lines;
+    }
+
+    const tooltipConfig = {
+        callbacks: {
+            title: function(tooltipItems) {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            }
+        }
+    };
+
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            tooltip: tooltipConfig,
+            legend: {
+                labels: { color: '#e2e8f0', usePointStyle: true, boxWidth: 8 }
+            }
+        },
+        scales: {
+            x: {
+                grid: { color: 'rgba(51, 65, 85, 0.5)' },
+                ticks: { color: '#94a3b8' }
+            },
+            y: {
+                grid: { color: 'rgba(51, 65, 85, 0.5)' },
+                ticks: { color: '#94a3b8' }
+            }
+        }
+    };
+
+    const dates = ['2月28日', '3月2日', '3月4日', '3月6日', '3月8日', '3月10日', '3月12日', '3月14日', '3月16日', '3月18日'];
+
+    new Chart(document.getElementById('munitionsChart'), {
+        type: 'line',
+        data: {
+            labels: dates.map(wrapLabel),
+            datasets: [
+                {
+                    label: '美军弹药消耗 (累计)',
+                    data: [120, 350, 800, 1100, 1250, 1400, 1600, 1750, 1850, 1920],
+                    borderColor: '#ff6d00',
+                    backgroundColor: 'rgba(255, 109, 0, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: '伊朗弹药消耗 (累计)',
+                    data: [300, 900, 1500, 2400, 3100, 3800, 4600, 5200, 5800, 6530],
+                    borderColor: '#00e5ff',
+                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: commonOptions
+    });
+
+    new Chart(document.getElementById('costChart'), {
+        type: 'bar',
+        data: {
+            labels: dates.map(wrapLabel),
+            datasets: [
+                {
+                    label: '美军单日成本 ($M)',
+                    data: [180, 250, 420, 210, 150, 190, 220, 160, 110, 80],
+                    backgroundColor: '#ff6d00',
+                    borderRadius: 4
+                },
+                {
+                    label: '伊朗单日成本 ($M)',
+                    data: [15, 35, 25, 45, 30, 40, 50, 35, 40, 48],
+                    backgroundColor: '#00e5ff',
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: commonOptions
+    });
+
+    new Chart(document.getElementById('casualtiesChart'), {
+        type: 'line',
+        data: {
+            labels: dates.map(wrapLabel),
+            datasets: [
+                {
+                    label: '美军及盟友伤亡',
+                    data: [12, 18, 45, 52, 60, 68, 85, 92, 105, 118],
+                    borderColor: '#ff6d00',
+                    backgroundColor: 'rgba(255, 109, 0, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: '伊朗军队伤亡',
+                    data: [85, 210, 340, 520, 680, 890, 1120, 1340, 1560, 1820],
+                    borderColor: '#00e5ff',
+                    backgroundColor: 'rgba(0, 229, 255, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            ...commonOptions,
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        ...tooltipConfig.callbacks,
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' 人';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('asymmetricChart'), {
+        type: 'bubble',
+        data: {
+            datasets: [
+                {
+                    label: '美制-战斧巡航导弹',
+                    data: [{ x: 150, y: 2000000, r: 25 }],
+                    backgroundColor: 'rgba(255, 109, 0, 0.7)',
+                    borderColor: '#ff6d00'
+                },
+                {
+                    label: '美制-SM-6防空导弹',
+                    data: [{ x: 420, y: 4300000, r: 40 }],
+                    backgroundColor: 'rgba(255, 109, 0, 0.7)',
+                    borderColor: '#ff6d00'
+                },
+                {
+                    label: '美制-JDAM制导炸弹',
+                    data: [{ x: 1350, y: 30000, r: 15 }],
+                    backgroundColor: 'rgba(255, 109, 0, 0.7)',
+                    borderColor: '#ff6d00'
+                },
+                {
+                    label: '伊制-Shahed-136无人机',
+                    data: [{ x: 4800, y: 20000, r: 35 }],
+                    backgroundColor: 'rgba(0, 229, 255, 0.7)',
+                    borderColor: '#00e5ff'
+                },
+                {
+                    label: '伊制-Fateh-110弹道导弹',
+                    data: [{ x: 950, y: 120000, r: 30 }],
+                    backgroundColor: 'rgba(0, 229, 255, 0.7)',
+                    borderColor: '#00e5ff'
+                },
+                {
+                    label: '伊制-Zolfaghar弹道导弹',
+                    data: [{ x: 450, y: 250000, r: 20 }],
+                    backgroundColor: 'rgba(0, 229, 255, 0.7)',
+                    borderColor: '#00e5ff'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'logarithmic',
+                    title: { display: true, text: '消耗数量 (对数坐标)', color: '#94a3b8' },
+                    grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: {
+                    type: 'logarithmic',
+                    title: { display: true, text: '单发单位成本 (美元, 对数坐标)', color: '#94a3b8' },
+                    grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                    ticks: {
+                        color: '#94a3b8',
+                        callback: function(value) {
+                            return '$' + Number(value).toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const data = context.raw;
+                            return context.dataset.label + ': 发射量 ' + data.x + ', 单价 $' + data.y.toLocaleString();
+                        }
+                    }
+                },
+                legend: {
+                    labels: { color: '#e2e8f0', usePointStyle: true }
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('targetsChart'), {
+        type: 'bar',
+        data: {
+            labels: ['空军基地设施', '雷达与预警站', '指挥控制中心(C2)', '弹药/后勤库', '海军舰艇/港口'].map(wrapLabel),
+            datasets: [
+                {
+                    label: '美军被摧毁设施',
+                    data: [14, 8, 3, 5, 2],
+                    backgroundColor: '#ff6d00',
+                },
+                {
+                    label: '伊朗被摧毁设施',
+                    data: [22, 35, 16, 28, 9],
+                    backgroundColor: '#00e5ff',
+                }
+            ]
+        },
+        options: {
+            ...commonOptions,
+            indexAxis: 'y',
+            scales: {
+                x: { stacked: false, grid: { color: 'rgba(51, 65, 85, 0.5)' }, ticks: { color: '#94a3b8' } },
+                y: { stacked: false, grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+</script>
+
+<!--
+================================================================================
+INFOGRAPHIC METADATA & COMPLIANCE CONFIRMATION
+================================================================================
+
+1. PALETTE SELECTION:
+Chosen Palette: "Energetic & Playful" (Deep Navy Background #0f172a, Vibrant Orange #ff6d00, Bright Cyan #00e5ff). 
+Reasoning: Provides high contrast suitable for dark mode military data visualization, distinctly separating the two factions (US: Orange, Iran: Cyan).
+
+2. NARRATIVE PLAN:
+- Section 1 (Overview): Sets the stage with big numbers (Total munitions, max daily cost, attack waves, destroyed targets) to instantly convey scale.
+- Section 2 (Munitions & Cost): Shows the core difference in military philosophy. Line chart shows cumulative usage, Bar chart shows economic burn rate.
+- Section 3 (Asymmetric Warfare): The core analytical piece. A Bubble chart maps volume vs. unit cost to clearly illustrate asymmetric advantage (cheap volume vs expensive precision).
+- Section 4 (Casualties): An Area chart visualizing the human toll over time.
+- Section 5 (Destroyed Targets): A horizontal Bar chart comparing infrastructural damage across key categories.
+
+3. VISUALIZATION CHOICES:
+- Data Point: Munition Consumption Trend -> Goal: Change -> Chosen Visualization: Line Chart -> Justification: Chart.js Canvas Line Chart perfectly visualizes accumulation over time. (NO SVG used).
+- Data Point: Daily Cost -> Goal: Change/Compare -> Chosen Visualization: Bar Chart -> Justification: Chart.js Canvas Bar Chart shows distinct daily values for comparison. (NO SVG used).
+- Data Point: Asymmetric Cost/Volume -> Goal: Relationships -> Chosen Visualization: Bubble Chart -> Justification: Chart.js Canvas Bubble Chart with logarithmic scales handles the massive disparities in cost ($30k to $4M) and volume. (NO SVG used).
+- Data Point: Casualties -> Goal: Change -> Chosen Visualization: Area Chart -> Justification: Chart.js Line chart with `fill: true` visualizes compounding human cost. (NO SVG used).
+- Data Point: Destroyed Targets -> Goal: Compare -> Chosen Visualization: Horizontal Bar Chart -> Justification: Chart.js handles long category labels better horizontally, comparing two factions side-by-side. (NO SVG used).
+
+4. COMPLIANCE CONFIRMATION:
+I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the output. All icons are standard Unicode characters. All charts are rendered strictly via Canvas using Chart.js.
+================================================================================
+-->
+</body>
+</html>

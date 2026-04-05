@@ -1,0 +1,6 @@
+{
+  "build": {
+    "outputDirectory": "dist-offline",
+    "command": "npm run build"
+  }
+}

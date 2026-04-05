@@ -18,6 +18,7 @@ import TacticalMap from '@/components/map/TacticalMap';
 import { useGlobalState } from '@/context/GlobalContext';
 import { mockTargets, mockWeapons } from '@/data/mockData';
 import type { Target as TargetType, Weapon } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 type WorkflowStage = 'detection' | 'nomination' | 'review' | 'prosecution' | 'executed';
 
@@ -26,7 +27,6 @@ export function Nomination() {
   const [selectedTarget, setSelectedTarget] = useState<TargetType | null>(null);
   const [showAIPanel, setShowAIPanel] = useState(false);
   const [showMapPanel, setShowMapPanel] = useState(false);
-  const [notifications, setNotifications] = useState<{id: string, message: string, type: 'success' | 'info' | 'warning', time: string}[]>([]);
   const [aiMetrics, setAiMetrics] = useState({
     timeToTarget: 70,
     distance: 60,
@@ -36,6 +36,7 @@ export function Nomination() {
     agmMatch: 85
   });
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null);
+  const toast = useToast();
 
   // 使用全局状态的提名目标作为工作流数据
   const workflowItems = state.nominatedTargets;
@@ -48,21 +49,12 @@ export function Nomination() {
     { id: 'executed', label: '任务完成', color: '#4a7c59', icon: CheckCircle2, count: workflowItems.filter(i => i.stage === 'executed').length }
   ];
 
-  const addLocalNotification = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
-    const id = Date.now().toString();
-    const time = new Date().toLocaleTimeString('zh-CN');
-    setNotifications(prev => [{ id, message, type, time }, ...prev].slice(0, 5));
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 4000);
-  };
-
   // 使用全局状态的advanceStage方法
   const handleAdvanceStage = (targetId: string) => {
     advanceStage(targetId);
     const target = workflowItems.find(item => item.target.id === targetId)?.target;
     if (target) {
-      addLocalNotification(`✓ 目标"${target.name}"已推进至下一阶段`, 'success');
+      toast.success(`目标"${target.name}"已推进至下一阶段`);
     }
   };
 
@@ -71,7 +63,7 @@ export function Nomination() {
     const target = workflowItems.find(item => item.target.id === targetId)?.target || mockTargets.find(t => t.id === targetId);
     if (target && !workflowItems.some(item => item.target.id === targetId)) {
       nominateTarget(target);
-      addLocalNotification(`✓ 目标"${target.name}"已成功提名至工作流`, 'success');
+      toast.success(`目标"${target.name}"已成功提名至工作流`);
     }
   };
 
@@ -104,23 +96,6 @@ export function Nomination() {
 
   return (
     <div className="h-[calc(100vh-64px)] flex flex-col bg-[#0d1117] relative">
-      {/* Notifications Toast */}
-      <div className="fixed top-20 right-6 z-[9999] space-y-2 max-w-sm">
-        {notifications.map((notif) => (
-          <div
-            key={notif.id}
-            className={`px-4 py-3 rounded-lg shadow-xl border backdrop-blur-sm animate-slide-in-right ${
-              notif.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-              notif.type === 'warning' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
-              'bg-blue-500/10 border-blue-500/30 text-blue-400'
-            }`}
-          >
-            <p className="text-sm font-medium">{notif.message}</p>
-            <p className="text-xs opacity-60 mt-1">{notif.time}</p>
-          </div>
-        ))}
-      </div>
-
       {/* Header */}
       <div className="px-6 py-3 border-b border-[#21262d] bg-[#161b22]/50">
         <div className="flex items-center justify-between">
@@ -506,7 +481,7 @@ export function Nomination() {
 
                       <button
                         onClick={() => {
-                          addLocalNotification(`🚀 任务已执行：${selectedWeapon?.name} → ${selectedTarget?.name}`, 'success');
+                          toast.success(`任务已执行：${selectedWeapon?.name} → ${selectedTarget?.name}`);
                           if (selectedTarget) {
                             handleAdvanceStage(selectedTarget.id);
                           }

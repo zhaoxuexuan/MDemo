@@ -46,12 +46,14 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   const [expandedGroups, setExpandedGroups] = useState<string[]>(['sensors', 'targets', 'forces']);
 
   const menuItems = [
+    { id: 'dashboard', label: '态势总览', icon: BarChart3 },
     { id: 'battlespace', label: '战场空间管理', icon: MapIcon },
     { id: 'reconnaissance', label: '目标侦察', icon: Eye },
     { id: 'nomination', label: '目标提名', icon: Crosshair },
     { id: 'weapons', label: '武器匹配', icon: Rocket },
     { id: 'mission', label: '作战方案', icon: ClipboardCheck },
     { id: 'assessment', label: '战损评估', icon: BarChart3 },
+    { id: 'map', label: '战场地图', icon: MapIcon },
     { id: 'intelligence', label: '情报中心', icon: FileText },
     { id: 'sensors', label: '传感器管理', icon: Radio },
     { id: 'data', label: '数据融合', icon: Database },

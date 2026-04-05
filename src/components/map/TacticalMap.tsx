@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, Marker, Popup, Circle, Polyline, useMap } from 'react-leaflet';
 import { DivIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Crosshair, MapPin, AlertTriangle, Info, Radio, Rocket, Eye, Zap, Users } from 'lucide-react';
 import type { Target, Sensor, Weapon } from '@/types';
+import { OfflineTileLayer } from './OfflineTileLayerReact';
 
 // Custom target icons
 const createTargetIcon = (threatLevel: number, isHovered: boolean = false) => {
@@ -261,10 +262,7 @@ export default function TacticalMap({
         className="w-full h-full"
         style={{ background: '#1a1a1a' }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
+        <OfflineTileLayer />
         
         <MapController selectedTarget={selectedTarget} />
 

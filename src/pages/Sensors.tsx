@@ -3,9 +3,11 @@ import { Radio, Satellite, Plane, Radar, Activity, Power, Settings, Signal } fro
 import TacticalMap from '@/components/map/TacticalMap';
 import { mockSensors, mockTargets } from '@/data/mockData';
 import type { Sensor } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 export function Sensors() {
   const [selectedSensor, setSelectedSensor] = useState<Sensor | null>(null);
+  const toast = useToast();
 
   const sensorTypeIcons = {
     satellite: Satellite,
@@ -198,11 +200,17 @@ export function Sensors() {
 
                 {/* Actions */}
                 <div className="flex gap-3 mt-4">
-                  <button className="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm hover:bg-emerald-500/30 transition-colors">
+                  <button
+                    onClick={() => toast.success(`传感器"${selectedSensor.name}"已${selectedSensor.status === 'active' ? '关闭' : '启动'}`)}
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm hover:bg-emerald-500/30 transition-colors"
+                  >
                     <Power className="w-4 h-4" />
                     {selectedSensor.status === 'active' ? '关闭' : '启动'}
                   </button>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700 transition-colors">
+                  <button
+                    onClick={() => toast.info(`正在打开${selectedSensor.name}的配置面板...`)}
+                    className="flex items-center gap-2 px-4 py-2 bg-[#161b22] text-slate-300 rounded-lg text-sm hover:bg-[#21262d] transition-colors"
+                  >
                     <Settings className="w-4 h-4" />
                     配置
                   </button>

@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { FileText, Search, Eye, Lock, Clock, MapPin, Download, Share2 } from 'lucide-react';
 import { mockIntelReports } from '@/data/mockData';
 import type { IntelReport } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 export function Intelligence() {
   const [selectedReport, setSelectedReport] = useState<IntelReport | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterClassification, setFilterClassification] = useState<string>('all');
+  const toast = useToast();
 
   const filteredReports = mockIntelReports.filter(report => {
     if (filterClassification !== 'all' && report.classification !== filterClassification) return false;
@@ -120,10 +122,16 @@ export function Intelligence() {
                 <Eye className="w-5 h-5 text-amber-400" />
                 <h3 className="font-semibold text-white">情报详情</h3>
                 <div className="ml-auto flex items-center gap-2">
-                  <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                  <button
+                    onClick={() => toast.success(`情报报告"${selectedReport?.title}"已导出`)}
+                    className="p-2 text-slate-400 hover:text-white hover:bg-[#21262d] rounded-lg transition-colors"
+                  >
                     <Download className="w-4 h-4" />
                   </button>
-                  <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                  <button
+                    onClick={() => toast.info(`情报分享链接已复制到剪贴板`)}
+                    className="p-2 text-slate-400 hover:text-white hover:bg-[#21262d] rounded-lg transition-colors"
+                  >
                     <Share2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -197,11 +205,17 @@ export function Intelligence() {
                 </div>
 
                 {/* Actions */}
-                <div className="mt-6 pt-6 border-t border-slate-700 flex gap-3">
-                  <button className="military-btn py-2 px-4 text-sm">
+                <div className="mt-6 pt-6 border-t border-[#21262d] flex gap-3">
+                  <button
+                    onClick={() => toast.success(`已从情报"${selectedReport.title}"生成目标提名`)}
+                    className="px-4 py-2 rounded-lg text-sm font-medium bg-[#8b956d] text-[#0d1117] hover:bg-[#9ba57d] transition-colors"
+                  >
                     生成目标提名
                   </button>
-                  <button className="military-btn-secondary py-2 px-4 text-sm">
+                  <button
+                    onClick={() => toast.info(`已将情报"${selectedReport.title}"添加至监视列表`)}
+                    className="px-4 py-2 rounded-lg text-sm font-medium bg-[#161b22] text-slate-300 border border-[#21262d] hover:border-[#30363d] transition-colors"
+                  >
                     添加到监视列表
                   </button>
                 </div>

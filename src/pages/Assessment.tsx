@@ -3,41 +3,45 @@ import { BarChart3, Target, CheckCircle2, XCircle, AlertTriangle, Camera, FileTe
 import TacticalMap from '@/components/map/TacticalMap';
 import { mockTargets } from '@/data/mockData';
 import type { Target as TargetType } from '@/types';
+import { useToast } from '@/components/ui/Toast';
+
+type DamageLevel = 'none' | 'light' | 'moderate' | 'severe' | 'destroyed';
+
+const damageLevels: { value: DamageLevel; label: string; color: string; icon: React.ElementType }[] = [
+  { value: 'none', label: '无损伤', color: 'text-slate-400', icon: XCircle },
+  { value: 'light', label: '轻微', color: 'text-[#5a7a8a]', icon: AlertTriangle },
+  { value: 'moderate', label: '中等', color: 'text-amber-400', icon: AlertTriangle },
+  { value: 'severe', label: '严重', color: 'text-orange-400', icon: AlertTriangle },
+  { value: 'destroyed', label: '摧毁', color: 'text-red-400', icon: CheckCircle2 }
+];
 
 export function Assessment() {
   const [selectedTarget, setSelectedTarget] = useState<TargetType | null>(null);
   const [assessmentStep, setAssessmentStep] = useState<'initial' | 'analyzing' | 'complete'>('initial');
+  const [selectedDamage, setSelectedDamage] = useState<DamageLevel | null>(null);
+  const toast = useToast();
 
-  // Targets that have been engaged
   const engagedTargets = mockTargets.filter(t => t.status === 'engaged' || t.status === 'complete');
   const completedTargets = mockTargets.filter(t => t.status === 'complete');
 
-  const damageLevels = [
-    { value: 'none', label: '无损伤', color: 'text-slate-400' },
-    { value: 'light', label: '轻微', color: 'text-[#5a7a8a]' },
-    { value: 'moderate', label: '中等', color: 'text-amber-400' },
-    { value: 'severe', label: '严重', color: 'text-orange-400' },
-    { value: 'destroyed', label: '摧毁', color: 'text-red-400' }
-  ];
-  
-  // Use damageLevels to avoid unused variable warning
-  console.log(damageLevels);
-
-  const handleAnalyze = () => {
+  const handleSelectDamage = (level: DamageLevel) => {
+    setSelectedDamage(level);
     setAssessmentStep('analyzing');
     setTimeout(() => {
       setAssessmentStep('complete');
+      toast.success(`AI分析完成：目标 "${selectedTarget?.name}" 评估为 ${damageLevels.find(d => d.value === level)?.label}`);
     }, 2000);
   };
 
   const handleComplete = () => {
-    alert('战损评估已完成，目标已归档');
+    toast.success(`战损评估已完成，目标 "${selectedTarget?.name}" 已归档（${selectedDamage ? damageLevels.find(d => d.value === selectedDamage)?.label : ''}）`);
     setAssessmentStep('initial');
     setSelectedTarget(null);
+    setSelectedDamage(null);
   };
 
   const handleReengage = () => {
-    alert('已生成二次打击方案');
+    toast.warning(`已生成二次打击方案，目标：${selectedTarget?.name}。建议武器：MQ-9 死神无人机`);
   };
 
   return (
@@ -53,7 +57,7 @@ export function Assessment() {
             <p className="text-2xl font-bold text-emerald-400">{completedTargets.length}</p>
             <p className="text-xs text-slate-400">已完成评估</p>
           </div>
-          <div className="h-10 w-px bg-slate-700" />
+          <div className="h-10 w-px bg-[#21262d]" />
           <div className="text-right">
             <p className="text-2xl font-bold text-purple-400">
               {Math.round((completedTargets.length / Math.max(1, engagedTargets.length)) * 100)}%
@@ -67,18 +71,22 @@ export function Assessment() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Panel - Target List */}
         <div className="space-y-6">
-          <div className="military-card">
-            <div className="military-card-header">
+          <div className="bg-[#161b22] rounded-lg border border-[#21262d]">
+            <div className="px-4 py-3 border-b border-[#21262d] flex items-center gap-2">
               <Target className="w-5 h-5 text-amber-400" />
               <h3 className="font-semibold text-white">待评估目标</h3>
               <span className="ml-auto text-xs text-slate-400">{engagedTargets.length} 个</span>
             </div>
             <div className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
               {engagedTargets.map((target) => (
-                <div 
+                <div
                   key={target.id}
-                  onClick={() => setSelectedTarget(target)}
-                  className={`target-card cursor-pointer ${selectedTarget?.id === target.id ? 'selected' : ''}`}
+                  onClick={() => { setSelectedTarget(target); setAssessmentStep('initial'); setSelectedDamage(null); }}
+                  className={`p-4 rounded-lg cursor-pointer transition-colors border ${
+                    selectedTarget?.id === target.id
+                      ? 'border-[#8b956d] bg-[#8b956d]/10'
+                      : 'border-[#21262d] bg-[#0d1117] hover:border-[#30363d]'
+                  }`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>
@@ -86,8 +94,8 @@ export function Assessment() {
                       <p className="text-xs text-slate-400">{target.type}</p>
                     </div>
                     <span className={`px-2 py-1 rounded text-xs ${
-                      target.status === 'complete' 
-                        ? 'bg-emerald-500/20 text-emerald-400' 
+                      target.status === 'complete'
+                        ? 'bg-emerald-500/20 text-emerald-400'
                         : 'bg-purple-500/20 text-purple-400'
                     }`}>
                       {target.status === 'complete' ? '已评估' : '待评估'}
@@ -108,49 +116,29 @@ export function Assessment() {
           </div>
 
           {/* Statistics */}
-          <div className="military-card">
-            <div className="military-card-header">
+          <div className="bg-[#161b22] rounded-lg border border-[#21262d]">
+            <div className="px-4 py-3 border-b border-[#21262d] flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-amber-400" />
               <h3 className="font-semibold text-white">评估统计</h3>
             </div>
             <div className="p-4">
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">完全摧毁</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div className="h-full bg-red-500 rounded-full" style={{ width: '60%' }} />
+                {[
+                  { label: '完全摧毁', pct: 60, color: 'bg-red-500' },
+                  { label: '严重损伤', pct: 25, color: 'bg-orange-500' },
+                  { label: '中等损伤', pct: 10, color: 'bg-amber-500' },
+                  { label: '需要二次打击', pct: 5, color: 'bg-[#5a7a8a]' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between">
+                    <span className="text-sm text-slate-400">{item.label}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 h-2 bg-[#21262d] rounded-full overflow-hidden">
+                        <div className={`h-full ${item.color} rounded-full`} style={{ width: `${item.pct}%` }} />
+                      </div>
+                      <span className="text-sm text-white w-8">{item.pct}%</span>
                     </div>
-                    <span className="text-sm text-white w-8">60%</span>
                   </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">严重损伤</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div className="h-full bg-orange-500 rounded-full" style={{ width: '25%' }} />
-                    </div>
-                    <span className="text-sm text-white w-8">25%</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">中等损伤</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div className="h-full bg-amber-500 rounded-full" style={{ width: '10%' }} />
-                    </div>
-                    <span className="text-sm text-white w-8">10%</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">需要二次打击</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#5a7a8a] rounded-full" style={{ width: '5%' }} />
-                    </div>
-                    <span className="text-sm text-white w-8">5%</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -159,13 +147,13 @@ export function Assessment() {
         {/* Center - Assessment */}
         <div className="lg:col-span-2 space-y-6">
           {/* Map */}
-          <div className="military-card">
-            <div className="military-card-header">
+          <div className="bg-[#161b22] rounded-lg border border-[#21262d]">
+            <div className="px-4 py-3 border-b border-[#21262d] flex items-center gap-2">
               <Camera className="w-5 h-5 text-amber-400" />
               <h3 className="font-semibold text-white">打击区域</h3>
             </div>
             <div className="h-[300px]">
-              <TacticalMap 
+              <TacticalMap
                 targets={selectedTarget ? [selectedTarget] : engagedTargets}
                 selectedTargetId={selectedTarget?.id}
                 onTargetSelect={setSelectedTarget}
@@ -174,9 +162,9 @@ export function Assessment() {
           </div>
 
           {/* Assessment Panel */}
-          {selectedTarget && (
-            <div className="military-card">
-              <div className="military-card-header">
+          {selectedTarget ? (
+            <div className="bg-[#161b22] rounded-lg border border-[#21262d]">
+              <div className="px-4 py-3 border-b border-[#21262d] flex items-center gap-2">
                 <FileText className="w-5 h-5 text-amber-400" />
                 <h3 className="font-semibold text-white">战损评估: {selectedTarget.name}</h3>
               </div>
@@ -184,36 +172,26 @@ export function Assessment() {
                 {assessmentStep === 'initial' && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <button className="p-4 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-500 transition-colors text-center">
-                        <XCircle className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                        <p className="text-sm text-slate-400">无损伤</p>
-                      </button>
-                      <button className="p-4 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-[#5a7a8a] transition-colors text-center">
-                        <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-[#5a7a8a]" />
-                        <p className="text-sm text-[#5a7a8a]">轻微损伤</p>
-                      </button>
-                      <button className="p-4 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-amber-500 transition-colors text-center">
-                        <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-amber-400" />
-                        <p className="text-sm text-amber-400">中等损伤</p>
-                      </button>
-                      <button className="p-4 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-red-500 transition-colors text-center">
-                        <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-red-400" />
-                        <p className="text-sm text-red-400">完全摧毁</p>
-                      </button>
+                      {damageLevels.map((level) => {
+                        const Icon = level.icon;
+                        return (
+                          <button
+                            key={level.value}
+                            onClick={() => handleSelectDamage(level.value)}
+                            className="p-4 bg-[#0d1117]/50 rounded-lg border border-[#21262d] hover:border-[#30363d] transition-all text-center group"
+                          >
+                            <Icon className={`w-8 h-8 mx-auto mb-2 ${level.color} group-hover:scale-110 transition-transform`} />
+                            <p className="text-sm text-slate-300">{level.label}</p>
+                          </button>
+                        );
+                      })}
                     </div>
 
-                    <div className="bg-slate-800/50 rounded-lg p-4">
+                    <div className="bg-[#0d1117]/50 rounded-lg p-4">
                       <h4 className="text-sm font-medium text-white mb-3">AI辅助评估</h4>
                       <p className="text-sm text-slate-400 mb-4">
-                        系统将分析打击前后的卫星图像、传感器数据和情报报告，自动生成战损评估报告。
+                        系统将分析打击前后的卫星图像、传感器数据和情报报告，自动生成战损评估报告。请选择上方损伤等级以启动AI分析。
                       </p>
-                      <button 
-                        onClick={handleAnalyze}
-                        className="w-full military-btn py-3 text-sm flex items-center justify-center gap-2"
-                      >
-                        <BarChart3 className="w-4 h-4" />
-                        开始AI分析
-                      </button>
                     </div>
                   </div>
                 )}
@@ -229,26 +207,28 @@ export function Assessment() {
                 {assessmentStep === 'complete' && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-center">
-                        <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-red-400" />
-                        <p className="text-lg font-bold text-red-400">完全摧毁</p>
+                      <div className={`${selectedDamage === 'destroyed' ? 'bg-red-500/10 border-red-500/30' : 'bg-[#0d1117]/50'} border rounded-lg p-4 text-center`}>
+                        <CheckCircle2 className={`w-8 h-8 mx-auto mb-2 ${damageLevels.find(d => d.value === selectedDamage)?.color || 'text-red-400'}`} />
+                        <p className="lg font-bold" style={{ color: damageLevels.find(d => d.value === selectedDamage)?.color?.replace('text-', '') || '#ef4444' }}>
+                          {damageLevels.find(d => d.value === selectedDamage)?.label || '已评估'}
+                        </p>
                         <p className="text-xs text-slate-400 mt-1">置信度 96%</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-4 text-center">
+                      <div className="bg-[#0d1117]/50 rounded-lg p-4 text-center">
                         <p className="text-2xl font-bold text-emerald-400">0</p>
-                        <p className="text-xs text-slate-400">附带伤亡</p>
+                        <p className="text-xs text-slate-400 mt-1">附带伤亡</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-4 text-center">
+                      <div className="bg-[#0d1117]/50 rounded-lg p-4 text-center">
                         <p className="text-2xl font-bold text-emerald-400">无</p>
-                        <p className="text-xs text-slate-400">平民损伤</p>
+                        <p className="text-xs text-slate-400 mt-1">平民损伤</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-4 text-center">
+                      <div className="bg-[#0d1117]/50 rounded-lg p-4 text-center">
                         <p className="text-2xl font-bold text-emerald-400">优秀</p>
-                        <p className="text-xs text-slate-400">打击精度</p>
+                        <p className="text-xs text-slate-400 mt-1">打击精度</p>
                       </div>
                     </div>
 
-                    <div className="bg-slate-800/50 rounded-lg p-4">
+                    <div className="bg-[#0d1117]/50 rounded-lg p-4">
                       <h4 className="text-sm font-medium text-white mb-3">评估详情</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center justify-between">
@@ -267,23 +247,28 @@ export function Assessment() {
                     </div>
 
                     <div className="flex gap-3">
-                      <button 
+                      <button
                         onClick={handleComplete}
-                        className="flex-1 military-btn-success py-3 text-sm flex items-center justify-center gap-2"
+                        className="flex-1 py-3 rounded-lg text-sm font-medium bg-[#4a7c59] text-white hover:bg-[#5a8c69] transition-colors flex items-center justify-center gap-2"
                       >
-                        <CheckCircle2 className="w-4 h-4" />
-                        完成评估
+                        <CheckCircle2 className="w-4 h-4" /> 完成评估
                       </button>
-                      <button 
+                      <button
                         onClick={handleReengage}
-                        className="flex-1 military-btn-secondary py-3 text-sm flex items-center justify-center gap-2"
+                        className="flex-1 py-3 rounded-lg text-sm font-medium bg-[#161b22] text-slate-300 border border-[#21262d] hover:border-[#30363d] transition-colors flex items-center justify-center gap-2"
                       >
-                        <RotateCcw className="w-4 h-4" />
-                        二次打击
+                        <RotateCcw className="w-4 h-4" /> 二次打击
                       </button>
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-[#161b22] rounded-lg border border-[#21262d] h-[300px] flex items-center justify-center">
+              <div className="text-center text-slate-500">
+                <Target className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                <p>选择一个目标进行战损评估</p>
               </div>
             </div>
           )}

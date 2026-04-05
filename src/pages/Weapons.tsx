@@ -5,12 +5,14 @@ import { WeaponCard } from '@/components/weapon/WeaponCard';
 import { TargetCard } from '@/components/target/TargetCard';
 import { mockTargets, mockWeapons } from '@/data/mockData';
 import type { Target as TargetType, Weapon as WeaponType } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 export function Weapons() {
   const [selectedTarget, setSelectedTarget] = useState<TargetType | null>(null);
   const [selectedWeapon, setSelectedWeapon] = useState<WeaponType | null>(null);
   const [useAI, setUseAI] = useState(true);
   const [isMatching, setIsMatching] = useState(false);
+  const toast = useToast();
 
   // Approved targets only
   const approvedTargets = mockTargets.filter(t => t.status === 'approved');
@@ -58,7 +60,7 @@ export function Weapons() {
     setIsMatching(true);
     setTimeout(() => {
       setIsMatching(false);
-      alert(`已为 "${selectedTarget.name}" 匹配武器 "${selectedWeapon.name}"`);
+      toast.success(`已为 "${selectedTarget.name}" 匹配武器 "${selectedWeapon.name}"（匹配度 ${weaponMatches.find(m => m.weapon.id === selectedWeapon.id)?.score ?? 0}%）`);
     }, 1500);
   };
 
